@@ -28,7 +28,7 @@ export function SearchModeSelector() {
   }
 
   return (
-    <div className="flex p-1 bg-background border rounded-full gap-1">
+    <div className="flex bg-background border rounded-full gap-1">
       {/* <button
         onClick={() => handleModeChange(MODES.SEARCH)}
         className={cn(
