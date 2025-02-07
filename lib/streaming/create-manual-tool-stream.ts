@@ -34,18 +34,16 @@ export function createManualToolStreamResponse(config: BaseStreamConfig) {
 
         let researchResult: any;
 
-        if (isDeepResearch) { // Conditionally execute deepResearch
+        if (isDeepResearch) {
           researchResult = await deepResearch({
-            query: messages[messages.length - 1].content, // Use the last message as the query
-            breadth: 3, // Adjust breadth and depth as needed
+            query: messages[messages.length - 1].content,
+            breadth: 3,
             depth: 2,
           });
-          console.log("🚀 ~ researchResult:", researchResult)
 
           // Prepend research learnings to the messages for the language model
           const result = researchResult.learnings.join('\n')
-
-          truncatedMessages[0].content = result
+          truncatedMessages[0].content = [...truncatedMessages, ...result].join('\n')
         }
 
         const researcherConfig = manualResearcher({
