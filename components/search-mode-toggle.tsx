@@ -4,27 +4,21 @@ import { cn } from '@/lib/utils'
 import { getCookie, setCookie } from '@/lib/utils/cookies'
 import { Telescope } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Toggle } from './ui/toggle'
 
-const MODES = {
-  SEARCH: 'search',
-  DEEP_RESEARCH: 'deepresearch'
-} as const
-
-type SearchMode = typeof MODES[keyof typeof MODES]
-
-export function SearchModeSelector() {
-  const [mode, setMode] = useState<SearchMode>(MODES.SEARCH)
+export function SearchModeToggle() {
+  const [isSearchMode, setIsSearchMode] = useState(true)
 
   useEffect(() => {
-    const savedMode = getCookie('search-mode') as SearchMode
-    if (savedMode && Object.values(MODES).includes(savedMode)) {
-      setMode(savedMode)
+    const savedMode = getCookie('deep-research-mode')
+    if (savedMode !== null) {
+      setIsSearchMode(savedMode === 'true')
     }
   }, [])
 
-  const handleModeChange = (newMode: SearchMode) => {
-    setMode(newMode)
-    setCookie('search-mode', newMode)
+  const handleSearchModeChange = (pressed: boolean) => {
+    setIsSearchMode(pressed)
+    setCookie('deep-research-mode', pressed.toString())
   }
 
   return (
@@ -43,19 +37,22 @@ export function SearchModeSelector() {
         <span>Search</span>
       </button> */}
 
-      <button
-        onClick={() => handleModeChange(MODES.DEEP_RESEARCH)}
+      <Toggle
+        aria-label="Toggle search mode"
+        pressed={isSearchMode}
+        onPressedChange={handleSearchModeChange}
+        variant="outline"
         className={cn(
-          'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors',
-          'hover:bg-accent',
-          mode === MODES.DEEP_RESEARCH ?
-            'bg-blue text-purple-400 border border-purple-400' :
-            'text-muted-foreground'
+          'gap-1 px-3 border border-input text-muted-foreground bg-background',
+          'data-[state=on]:bg-accent-blue',
+          'data-[state=on]:text-blue-400',
+          'data-[state=on]:border-blue-400',
+          'hover:bg-accent hover:text-accent-foreground rounded-full'
         )}
       >
         <Telescope className="size-4" />
-        <span>Deep Research</span>
-      </button>
+        <span className="text-xs">Deep Research</span>
+      </Toggle>
     </div>
   )
 }

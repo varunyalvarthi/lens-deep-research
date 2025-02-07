@@ -7,9 +7,6 @@ export const maxDuration = 30
 
 const DEFAULT_MODEL = 'groq:llama3-70b-8192'
 const DEFAULT_DEEP_RESEARCH_MODEL = 'groq:deepseek-r1-distill-llama-70b'
-const SEARCH_MODE_COOKIE = 'search-mode'
-
-type SearchMode = 'search' | 'deepresearch'
 
 export async function POST(req: Request) {
   try {
@@ -25,14 +22,15 @@ export async function POST(req: Request) {
     }
 
     const cookieStore = await cookies()
-    const searchModeCookie = cookieStore.get(SEARCH_MODE_COOKIE)?.value as SearchMode
+    const searchModeCookie = cookieStore.get('deep-research-mode')?.value
 
-    const isDeepResearch = searchModeCookie === 'deepresearch'
+    const isDeepResearch = searchModeCookie === 'true'
     const model = isDeepResearch ? DEFAULT_DEEP_RESEARCH_MODEL : DEFAULT_MODEL
 
     const supportsToolCalling = isToolCallSupported(model)
+    console.log("🚀 ~ supportsToolCalling:", supportsToolCalling)
 
-    const searchEnabled = isDeepResearch ? true : (searchModeCookie === 'search')
+    const searchEnabled = true
 
     return supportsToolCalling
       ? createToolCallingStreamResponse({
