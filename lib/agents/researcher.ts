@@ -78,7 +78,7 @@ Remember: You're not just collecting information - you're conducting thorough an
 
 type ResearcherReturn = Parameters<typeof streamText>[0]
 
-export function researcher({
+export async function researcher({
   messages,
   model,
   searchMode,
@@ -88,7 +88,7 @@ export function researcher({
   model: string
   searchMode: boolean
   isDeepResearch?: boolean
-}): ResearcherReturn {
+}): Promise<ResearcherReturn> {
   try {
     const currentDate = new Date().toLocaleString()
     const systemPrompt = isDeepResearch
@@ -107,7 +107,7 @@ export function researcher({
         ? ['search', 'retrieve', 'videoSearch']
         : [],
       maxSteps: isDeepResearch
-        ? 12  // Allows for comprehensive multi-step research
+        ? 7  // Allows for comprehensive multi-step research
         : searchMode ? 5 : 1,
       experimental_transform: smoothStream({
         // Use sentence chunking for more coherent research output
