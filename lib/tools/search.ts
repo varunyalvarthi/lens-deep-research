@@ -62,7 +62,7 @@ export async function search(
 async function tavilySearch(
   query: string,
   maxResults: number = 10,
-  searchDepth: 'basic' | 'advanced' = 'basic',
+  searchDepth: 'basic' | 'advanced' = 'advanced',
   includeDomains: string[] = [],
   excludeDomains: string[] = []
 ): Promise<SearchResults> {

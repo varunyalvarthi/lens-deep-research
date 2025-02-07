@@ -129,7 +129,8 @@ export async function deepResearch({
       limit(async () => {
         try {
           const result = await tavily.search(serpQuery.query, {
-            limit: 5,
+            limit: 20,
+            searchDepth: 'advanced',
           });
 
           // Collect URLs from this search
