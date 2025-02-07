@@ -4,24 +4,25 @@ import {
   DataStreamWriter,
   JSONValue,
   streamText
-} from 'ai'
-import { manualResearcher } from '../agents/manual-researcher'
-import { ExtendedCoreMessage } from '../types'
-import { getMaxAllowedTokens, truncateMessages } from '../utils/context-window'
-import { handleStreamFinish } from './handle-stream-finish'
-import { executeToolCall } from './tool-execution'
-import { BaseStreamConfig } from './types'
+} from 'ai';
+import { manualResearcher } from '../agents/manual-researcher';
+import { deepResearch } from '../tools/deep-research';
+import { ExtendedCoreMessage } from '../types';
+import { getMaxAllowedTokens, truncateMessages } from '../utils/context-window';
+import { handleStreamFinish } from './handle-stream-finish';
+import { executeToolCall } from './tool-execution';
+import { BaseStreamConfig } from './types';
 
 export function createManualToolStreamResponse(config: BaseStreamConfig) {
   return createDataStreamResponse({
     execute: async (dataStream: DataStreamWriter) => {
-      const { messages, model, chatId, searchMode } = config
+      const { messages, model, chatId, searchMode, isDeepResearch } = config;
       try {
-        const coreMessages = convertToCoreMessages(messages)
+        const coreMessages = convertToCoreMessages(messages);
         const truncatedMessages = truncateMessages(
           coreMessages,
           getMaxAllowedTokens(model)
-        )
+        );
 
         const { toolCallDataAnnotation, toolCallMessages } =
           await executeToolCall(
@@ -29,10 +30,26 @@ export function createManualToolStreamResponse(config: BaseStreamConfig) {
             dataStream,
             model,
             searchMode
-          )
+          );
+
+        let researchResult: any;
+
+        if (isDeepResearch) { // Conditionally execute deepResearch
+          researchResult = await deepResearch({
+            query: messages[messages.length - 1].content, // Use the last message as the query
+            breadth: 3, // Adjust breadth and depth as needed
+            depth: 2,
+          });
+          console.log("🚀 ~ researchResult:", researchResult)
+
+          // Prepend research learnings to the messages for the language model
+          const result = researchResult.learnings.join('\n')
+
+          truncatedMessages[0].content = result
+        }
 
         const researcherConfig = manualResearcher({
-          messages: [...truncatedMessages, ...toolCallMessages],
+          messages: [...truncatedMessages, ...toolCallMessages], // Use updated messages
           model,
           isSearchEnabled: searchMode
         })
@@ -58,21 +75,21 @@ export function createManualToolStreamResponse(config: BaseStreamConfig) {
               chatId,
               dataStream,
               skipRelatedQuestions: true,
-              annotations
-            })
-          }
-        })
+              annotations,
+            });
+          },
+        });
 
         result.mergeIntoDataStream(dataStream, {
-          sendReasoning: true
-        })
+          sendReasoning: true,
+        });
       } catch (error) {
-        console.error('Stream execution error:', error)
+        console.error('Stream execution error:', error);
       }
     },
     onError: error => {
-      console.error('Stream error:', error)
-      return error instanceof Error ? error.message : String(error)
-    }
-  })
+      console.error('Stream error:', error);
+      return error instanceof Error ? error.message : String(error);
+    },
+  });
 }

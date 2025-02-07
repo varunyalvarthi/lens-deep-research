@@ -1,12 +1,10 @@
 import { createManualToolStreamResponse } from '@/lib/streaming/create-manual-tool-stream'
-import { createToolCallingStreamResponse } from '@/lib/streaming/create-tool-calling-stream'
-import { isToolCallSupported } from '@/lib/utils/registry'
 import { cookies } from 'next/headers'
 
 export const maxDuration = 30
 
-const DEFAULT_MODEL = 'groq:llama3-70b-8192'
-const DEFAULT_DEEP_RESEARCH_MODEL = 'groq:deepseek-r1-distill-llama-70b'
+const DEFAULT_MODEL = 'google:gemini-2.0-flash'
+const DEFAULT_DEEP_RESEARCH_MODEL = 'google:gemini-2.0-flash'
 
 export async function POST(req: Request) {
   try {
@@ -27,26 +25,15 @@ export async function POST(req: Request) {
     const isDeepResearch = searchModeCookie === 'true'
     const model = isDeepResearch ? DEFAULT_DEEP_RESEARCH_MODEL : DEFAULT_MODEL
 
-    const supportsToolCalling = isToolCallSupported(model)
-    console.log("🚀 ~ supportsToolCalling:", supportsToolCalling)
-
     const searchEnabled = true
 
-    return supportsToolCalling
-      ? createToolCallingStreamResponse({
-        messages,
-        model,
-        chatId,
-        searchMode: searchEnabled,
-        isDeepResearch
-      })
-      : createManualToolStreamResponse({
-        messages,
-        model,
-        chatId,
-        searchMode: searchEnabled,
-        isDeepResearch
-      })
+    return createManualToolStreamResponse({
+      messages,
+      model,
+      chatId,
+      searchMode: searchEnabled,
+      isDeepResearch
+    })
   } catch (error) {
     console.error('API route error:', error)
     return new Response(
