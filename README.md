@@ -1,6 +1,4 @@
-![Lens](/app/opengraph-image.png)
-
-# Lens (WIP)
+# Lens
 
 ![Lens](/app/opengraph-image.png)
 
