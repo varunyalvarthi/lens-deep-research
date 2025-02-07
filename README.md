@@ -6,7 +6,7 @@ A minimalistic AI-powered search engine that helps you find and analyze informat
 
 ## Features
 
-- **AI-Powered Search**: Get answers using Groq's AI models.
+- **AI-Powered Search**: Get answers using Gemini 2.0 model.
 - **Web Search**: Retrieve results from the internet using Tavily's API.
 - **URL-Specific Search**: Extract insights from a given webpage.
 - **Academic Search**: Locate scholarly papers and research materials.
