@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import Textarea from 'react-textarea-autosize'
 import { EmptyScreen } from './empty-screen'
-import { SearchModeSelector } from './search-mode-toggle'
+import { SearchModeToggle } from './search-mode-toggle'
 import { Button } from './ui/button'
 
 interface ChatPanelProps {
@@ -126,7 +126,7 @@ export function ChatPanel({
           {/* Bottom menu area */}
           <div className="flex items-center justify-between p-3">
             <div className="flex items-center gap-2">
-              <SearchModeSelector />
+              <SearchModeToggle />
             </div>
             <div className="flex items-center gap-2">
               {messages.length > 0 && (
