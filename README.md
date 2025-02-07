@@ -2,7 +2,7 @@
 
 ![Lens](/app/opengraph-image.png)
 
-A minimalistic AI-powered search engine that helps you find and analyze information on the internet with advanced AI models.
+Open source implementation of Deep Research agent using Gemini 2.0
 
 ## Features
 
