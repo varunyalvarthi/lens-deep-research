@@ -77,7 +77,9 @@ export function ChatPanel({
       )}
     >
       {messages.length === 0 && (
-        <h1 className='text-2xl sm:text-4xl mb-6 text-neutral-800 dark:text-neutral-100 font-syne'>What do you want to search?</h1>
+        <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-center text-neutral-900 dark:text-neutral-100 font-syne mb-7">
+          What are you searching for?
+        </h1>
       )}
       <form
         onSubmit={handleSubmit}
